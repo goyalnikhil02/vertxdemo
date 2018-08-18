@@ -1,1 +1,5 @@
+com\beton\vertx\tutorials\Pets.class
+com\beton\vertx\tutorials\AppLauncher.class
+com\beton\vertx\tutorials\VertXTest.class
 com\beton\vertx\tutorials\ApplicationVerticle.class
+com\beton\vertx\tutorials\VertxRestExample.class

@@ -1,6 +1,7 @@
 package com.beton.vertx.tutorials;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.vertx.core.AbstractVerticle;
@@ -42,13 +43,17 @@ public class ApplicationVerticle extends AbstractVerticle {
 	public static void main(String[] args) {
         
 		
+		//List<Integer> number = Arrays.asList(1,3,41,61,81,101);
+		
 		Vertx vertx = Vertx.vertx();
 
 		vertx.deployVerticle(new ApplicationVerticle());
-
+		//System.out.println(sumStream(number));
+		
+		
 	}
 	private static int sumStream(List<Integer> list) {
-		return list.stream().filter(i -> (i%2 == 0)).mapToInt(i -> i*2).sum();
+		return list.stream().filter(i -> (i%2 == 0)).mapToInt(i -> i).sum();
 	}
 
 }
