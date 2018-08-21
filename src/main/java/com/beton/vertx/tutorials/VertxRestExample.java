@@ -12,6 +12,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
@@ -26,6 +27,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CookieHandler;
 import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.ext.web.handler.ErrorHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.core.AsyncResult;
 
@@ -61,6 +63,8 @@ public class VertxRestExample extends SyncVerticle {
                 .allowedHeader("Access-Control-Allow-Headers")
                 .allowedHeader("Content-Type"));	
 		
+     // enable BodyHandler globally for easiness of body accessing
+        router.route().handler(BodyHandler.create()).failureHandler(ErrorHandler.create());
 		router.route().handler(CookieHandler.create());
         router.route().handler(BodyHandler.create());
         
@@ -75,7 +79,7 @@ public class VertxRestExample extends SyncVerticle {
 		});
 
 		router.route(HttpMethod.GET, "/api/pets").handler(Sync.fiberHandler(this::getAll));
-		 router.route(HttpMethod.PUT, 
+		 router.route(HttpMethod.POST, 
 			        "/api/pets").handler(Sync.fiberHandler(this::saveNewEntity));
 		 
 		Route handler1 = router.post("/hi").consumes("*/json").handler(routingContext -> {
@@ -125,6 +129,8 @@ public class VertxRestExample extends SyncVerticle {
 	@Suspendable
 	private void saveNewEntity(RoutingContext routingContext) {
 	
+		final JsonObject entry = routingContext.getBodyAsJson();
+		
 		final Pets pet = Json.decodeValue(routingContext.getBodyAsString(),
 		        Pets.class);
 		
@@ -132,10 +138,25 @@ public class VertxRestExample extends SyncVerticle {
 		
 		
 		 
-		//routingContext.getBodyAsJson(),
-		final String response = Sync
-				.awaitResult(h -> mongoClient.save(COLLECTION, JsonObject.mapFrom(pet), h));
-		routingContext.response().end(response);
+	final String response = Sync
+			.awaitResult(h -> mongoClient.save(COLLECTION, JsonObject.mapFrom(pet), h));
+	
+	routingContext.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json").end(entry.encode());
+	
+		/*mongoClient.save(COLLECTION, JsonObject.mapFrom(pet), res -> {
+	        if (res.succeeded()) {
+	            logger.info("Account created: {}", res.result());
+	            //account.setId(res.result());
+	            //resultHandler.handle(Future.succeededFuture(account));
+	        } else {
+	            logger.error("Account not created", res.cause());
+	            //resultHandler.handle(Future.failedFuture(res.cause()));
+	        }
+	    });
+	    //return this;
+*/		
+		
+		//routingContext.response().end(response);
 	}
 
 }

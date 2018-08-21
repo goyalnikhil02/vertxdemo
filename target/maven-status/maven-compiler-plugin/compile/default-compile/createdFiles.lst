@@ -1,5 +1,10 @@
-com\beton\vertx\tutorials\Pets.class
 com\beton\vertx\tutorials\AppLauncher.class
+com\eventbusexample\reciever\RetryWithHandlerSender$1.class
+com\eventbusexample\reciever\RetryWithHandlerSender$2.class
+com\eventbusexample\reciever\RetryWithHandlerSender.class
+com\eventbusexample\reciever\RetryWithHandlerConsumer.class
+com\beton\vertx\tutorials\Pets.class
 com\beton\vertx\tutorials\VertXTest.class
+com\eventbusexample\reciever\MainVerticle.class
 com\beton\vertx\tutorials\ApplicationVerticle.class
 com\beton\vertx\tutorials\VertxRestExample.class
